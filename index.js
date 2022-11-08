@@ -65,7 +65,7 @@ async function run() {
       const allReviewer = await cursor.toArray();
       res.send(allReviewer);
     });
-
+    //  only my reviev (find with email)
     app.get("/userReview", async (req, res) => {
       let query = {};
       if (req.query.email) {
@@ -76,6 +76,13 @@ async function run() {
       const cursor = reviewCollection.find(query);
       const userReview = await cursor.toArray();
       res.send(userReview);
+    });
+
+    //  delete method
+    app.delete("/reviewUser/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await reviewCollection.deleteOne(query);
     });
   } finally {
   }
