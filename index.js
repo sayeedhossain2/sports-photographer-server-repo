@@ -22,7 +22,16 @@ async function run() {
       .db("sportsPhotographer")
       .collection("service");
 
+    //   get 3 data from db
     app.get("/service", async (req, res) => {
+      const query = {};
+      const cursor = serviceCollection.find(query);
+      const service = await cursor.limit(3).toArray();
+      res.send(service);
+    });
+
+    // get all data from db
+    app.get("/allService", async (req, res) => {
       const query = {};
       const cursor = serviceCollection.find(query);
       const service = await cursor.toArray();
