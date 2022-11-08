@@ -18,11 +18,16 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
+    // 1st database and collection
     const serviceCollection = client
       .db("sportsPhotographer")
       .collection("service");
+    // 2nd database and collection
+    const reviewCollection = client
+      .db("sportsPhotographer")
+      .collection("review");
 
-    //   get 3 data from db
+    //   get 3 data using limit from db
     app.get("/service", async (req, res) => {
       const query = {};
       const cursor = serviceCollection.find(query);
@@ -38,11 +43,39 @@ async function run() {
       res.send(service);
     });
 
+    // get specific data using id from db
     app.get("/singleService/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const singleService = await serviceCollection.findOne(query);
       res.send(singleService);
+    });
+
+    // review data post from client to db
+    app.post("/review", async (req, res) => {
+      const reviewer = req.body;
+      const result = await reviewCollection.insertOne(reviewer);
+      res.send(result);
+    });
+
+    // review all data get from db
+    app.get("/allReview", async (req, res) => {
+      const query = {};
+      const cursor = reviewCollection.find(query);
+      const allReviewer = await cursor.toArray();
+      res.send(allReviewer);
+    });
+
+    app.get("/userReview", async (req, res) => {
+      let query = {};
+      if (req.query.email) {
+        query = {
+          email: req.query.email,
+        };
+      }
+      const cursor = reviewCollection.find(query);
+      const userReview = await cursor.toArray();
+      res.send(userReview);
     });
   } finally {
   }
@@ -56,3 +89,5 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`sports photographer server running on ${port}`);
 });
+
+// storts bd server
