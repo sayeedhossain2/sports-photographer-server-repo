@@ -85,6 +85,11 @@ async function run() {
       res.send(userReview);
     });
 
+    app.put("/usersReview/:id", (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+    });
+
     //  delete method
     app.delete("/reviewUser/:id", async (req, res) => {
       const id = req.params.id;
