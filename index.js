@@ -27,6 +27,13 @@ async function run() {
       .db("sportsPhotographer")
       .collection("review");
 
+    // post data from site
+    app.post("/AddService", async (req, res) => {
+      const AddService = req.body;
+      const result = await serviceCollection.insertOne(AddService);
+      res.send(result);
+    });
+
     //   get 3 data using limit from db
     app.get("/service", async (req, res) => {
       const query = {};
@@ -83,6 +90,7 @@ async function run() {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await reviewCollection.deleteOne(query);
+      res.send(result);
     });
   } finally {
   }
