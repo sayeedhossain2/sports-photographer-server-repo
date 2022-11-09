@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 const app = express();
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -38,7 +39,7 @@ async function run() {
     app.get("/service", async (req, res) => {
       const query = {};
       const cursor = serviceCollection.find(query);
-      const service = await cursor.limit(3).toArray();
+      const service = await cursor.limit(3).sort({ _id: -1 }).toArray();
       res.send(service);
     });
 
@@ -46,7 +47,7 @@ async function run() {
     app.get("/allService", async (req, res) => {
       const query = {};
       const cursor = serviceCollection.find(query);
-      const service = await cursor.toArray();
+      const service = await cursor.sort({ _id: -1 }).toArray();
       res.send(service);
     });
 
@@ -69,7 +70,7 @@ async function run() {
     app.get("/allReview", async (req, res) => {
       const query = {};
       const cursor = reviewCollection.find(query);
-      const allReviewer = await cursor.toArray();
+      const allReviewer = await cursor.sort({ date: -1 }).toArray();
       res.send(allReviewer);
     });
     //  only my reviev (find with email)
@@ -81,7 +82,7 @@ async function run() {
         };
       }
       const cursor = reviewCollection.find(query);
-      const userReview = await cursor.toArray();
+      const userReview = await cursor.sort({ date: -1 }).toArray();
       res.send(userReview);
     });
 
