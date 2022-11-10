@@ -86,9 +86,32 @@ async function run() {
       res.send(userReview);
     });
 
-    app.put("/usersReview/:id", (req, res) => {
+    // put method
+    app.get("/usersReview/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const user = await reviewCollection.findOne(query);
+      res.send(user);
+    });
+
+    app.put("/usersReview/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
+      const updated = req.body;
+      const option = { upsert: true };
+      const updateReview = {
+        $set: {
+          rating: updated.rating,
+          message: updated.message,
+        },
+      };
+
+      const result = await reviewCollection.updateOne(
+        filter,
+        updateReview,
+        option
+      );
+      res.send(result);
     });
 
     //  delete method
@@ -111,4 +134,4 @@ app.listen(port, () => {
   console.log(`sports photographer server running on ${port}`);
 });
 
-// storts bd server
+// sports db server
